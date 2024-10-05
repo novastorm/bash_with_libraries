@@ -41,7 +41,6 @@ function moduleA::main() {
   log_debug $FUNCNAME
   if [[ $# -eq 0 ]]; then
     moduleA::run_interactively
-    exit
   else
     moduleA::parse_options "$@"
     [[ "${_run_option_pre_a}" == true ]] && moduleA::run_option_pre_a
