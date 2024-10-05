@@ -3,6 +3,8 @@
 LOGLEVEL=${LOGLEVEL:-0}
 DEBUG_LEVEL=${DEBUG_LEVEL:-10}
 
+local _run_option_a
+local _run_option_b
 
 function moduleA::parse_options() {
   log_debug $FUNCNAME
@@ -10,11 +12,14 @@ function moduleA::parse_options() {
   while :; do
     case $1 in
       -h|-\?|--help)
-        show_help
+        moduleA::show_help
         exit
         ;;
       --option-a)
         _run_option_a=true
+        ;;
+      --option-pre-a)
+        _run_option_pre_a=true
         ;;
       --)
         shift
@@ -34,11 +39,25 @@ function moduleA::parse_options() {
 
 function moduleA::main() {
   log_debug $FUNCNAME
-  moduleA::parse_options "$@"
-  [[ "${_run_option_a}" == true ]] && moduleA::run_option_a
+  if [[ $# -eq 0 ]]; then
+    moduleA::run_interactively
+    exit
+  else
+    moduleA::parse_options "$@"
+    [[ "${_run_option_pre_a}" == true ]] && moduleA::run_option_pre_a
+    [[ "${_run_option_a}" == true ]] && moduleA::run_option_a
+  fi
+}
+
+function moduleA::run_option_pre_a() {
+  log_debug $FUNCNAME
 }
 
 function moduleA::run_option_a() {
+  log_debug $FUNCNAME
+}
+
+function moduleA::run_interactively() {
   log_debug $FUNCNAME
 }
 
